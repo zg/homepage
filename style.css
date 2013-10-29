@@ -1,0 +1,136 @@
+* {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+a {
+    color: #000000;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+body {
+    background: #EEEEEE;
+    margin: 0;
+    padding: 0;
+}
+
+@media (min-width: 481px) {
+    #container {
+        background: #FFFFFF;
+        border: 1px solid #CCCCCC;
+        font-size: 12px;
+        margin: 10px auto;
+        padding: 15px;
+        width: 400px;
+    }
+
+    #title_bar {
+        height: 20px;
+    }
+
+    #title {
+        float: left;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    #menu {
+        float: right;
+    }
+
+    #menu ul {
+        margin: 2px;
+        padding: 0;
+    }
+
+    #menu li {
+        display: inline;
+        list-style-type: none;
+        margin: 0 0 0 2px;
+        padding: 0;
+    }
+
+    #picture {
+        clear: both;
+        float: left;
+        margin: 0;
+        padding: 0;
+        width: 110px;
+    }
+
+    #picture img {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    #contact_info {
+        margin-left: 110px;
+    }
+
+    #contact_info ul {
+        padding-left: 29px;
+    }
+
+    #about_me {
+        clear: both;
+        padding-top: 1px;
+    }
+}
+
+@media (max-width: 480px) {
+    #container {
+        background: #FFFFFF;
+        border: 1px solid #CCCCCC;
+        font-size: 13px;
+        margin: 10px;
+        padding: 15px;
+    }
+
+    #title {
+        font-size: 15pt;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    #menu {
+        text-align: center;
+    }
+
+    #menu ul {
+        margin: 10px;
+        padding: 10px 0;
+    }
+
+    #menu li {
+        display: inline;
+        list-style-type: none;
+        margin: 0;
+        padding: 9px;
+    }
+
+    #picture {
+        margin: 0 auto;
+        padding: 0;
+        width: 110px;
+        text-align: center;
+    }
+
+    #picture img {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    #contact_info {
+    }
+
+    #contact_info ul {
+    }
+
+    #about_me {
+        padding-top: 1px;
+    }
+}
