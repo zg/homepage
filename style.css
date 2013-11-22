@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Noto Sans'), local('NotoSans'), url(font.woff) format('woff')
+}
+
 * {
     font-family: 'Noto Sans', sans-serif;
 }
