@@ -1,0 +1,237 @@
+<?php
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(E_ALL);
+$api_url = "https://api.flickr.com/services/rest/";
+$api_key = ""; // https://www.flickr.com/services/apps/create/
+$user_id = ""; // http://idgettr.com
+
+function get_ssl_page($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_REFERER, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    $result = curl_exec($ch);
+    curl_close($ch);
+    return $result;
+}
+
+function construct_image_url($farm, $server, $id, $secret, $size="") {
+    return "https://farm".$farm.".staticflickr.com/".$server."/".$id."_".$secret."".($size == "" ? "" : "_".$size).".jpg";
+}
+
+function get_photo_sizes($photo_id) {
+    global $api_url, $api_key, $user_id;
+    $response = json_decode(get_ssl_page($api_url."?api_key=".$api_key."&method=flickr.photos.getSizes&photo_id=".$photo_id."&format=json&nojsoncallback=1"));
+    return $response;
+}
+
+function get_photosets() {
+    global $api_url, $api_key, $user_id;
+    return json_decode(get_ssl_page($api_url."?api_key=".$api_key."&method=flickr.photosets.getList&user_id=".$user_id."&format=json&nojsoncallback=1"));
+}
+
+function get_photoset_info($photoset_id) {
+    global $api_url, $api_key, $user_id;
+    return json_decode(get_ssl_page($api_url."?api_key=".$api_key."&method=flickr.photosets.getInfo&user_id=".$user_id."&photoset_id=".$photoset_id."&format=json&nojsoncallback=1"));
+}
+
+function get_photoset_photos($photoset_id) {
+    global $api_url, $api_key, $user_id;
+    return json_decode(get_ssl_page($api_url."?api_key=".$api_key."&method=flickr.photosets.getPhotos&user_id=".$user_id."&photoset_id=".$photoset_id."&format=json&nojsoncallback=1"));
+}
+
+function get_photo($photo_id) {
+    global $api_url, $api_key, $user_id;
+    $response = json_decode(get_ssl_page($api_url."?api_key=".$api_key."&method=flickr.photos.getInfo&photo_id=".$photo_id."&format=json&nojsoncallback=1"));
+    if($response->stat == 'ok' && $response->photo->owner->nsid != $user_id) {
+        $mock_response = new stdClass();
+        $mock_response->stat = 'fail';
+        $mock_response->message = "That photo doesn't belong to me.";
+        return $mock_response;
+    }
+    return $response;
+}
+
+$page_title = "Photos";
+$heading_title = "";
+$photos = null;
+$photo = null;
+$photo_number = 1;
+$photo_alt = "";
+
+$error = false;
+
+if(isset($_GET['ps_id']) && is_numeric($_GET['ps_id']) && !isset($_GET['p_id'])) {
+    $result = get_photoset_photos($_GET['ps_id']);
+    if($result->stat == 'fail') {
+        $heading_title = 'Error: '.$result->message;
+        $error = true;
+    } else {
+        $photos = $result->photoset->photo;
+        $heading_title = $result->photoset->title;
+		$page_title = 'Photos > '.$result->photoset->title;
+		$info = get_photoset_info($_GET['ps_id']);
+    }
+} else if(isset($_GET['ps_id']) && is_numeric($_GET['ps_id']) && isset($_GET['p_id']) && is_numeric($_GET['p_id'])) {
+    $set_result = get_photoset_photos($_GET['ps_id']);
+    if($set_result->stat == 'fail') {
+        $heading_title = 'Error: '.$result->message;
+        $error = true;
+    } else {
+        foreach($set_result->photoset->photo as $photo) {
+            if($photo->id == $_GET['p_id'])
+                break;
+            $photo_number++;
+        }
+        $photo_alt = $set_result->photoset->title.', Photo #'.$photo_number;
+        $heading_title = '<a href="/photos.html?ps_id='.$_GET['ps_id'].'">'.$set_result->photoset->title.'</a> > Photo #'.$photo_number;
+		$page_title = 'Photos > '.$set_result->photoset->title.' > Photo #'.$photo_number;
+        $photo_result = get_photo($_GET['p_id']);
+        if($photo_result->stat == 'fail') {
+            $heading_title = 'Error: '.$photo_result->message;
+        } else {
+            $photo = $photo_result->photo;
+        }
+    }
+} else {
+    $result = get_photosets();
+    if($result->stat == "fail") {
+        echo '<b style="background:#F00;color:#FFF">'.$result->message.'</b>';
+        $error = true;
+    }
+    else
+		$photos = $result->photosets->photoset;
+}
+
+$width = 1024;
+if($photo !== null && !$error) {
+    $sizes = get_photo_sizes($photo->id)->sizes;
+    $width = $sizes->size[8]->width;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Zack Zatkin-Gold - <?php echo $page_title; ?></title>
+        <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic" rel="stylesheet" type="text/css">
+        <style>
+        <!--
+        *{color:#000}
+        a{border-bottom:#000 1px solid;text-decoration:none}
+        body{background:#fff;margin:0;padding:0;height:100%}
+        h2{font-family:'Libre Baskerville',serif;font-size:30px;text-align:center}
+        #container{margin:0;padding:0}
+        #header{position:fixed;display:flex;background:#000;width:100%;z-index:42}
+        #content{padding-top:85px}
+        #title{font-weight:bold;float:left;position:absolute;left:0}
+        #title a{border-color:#fff}
+        #menu{width:100%;text-align:center}
+        #menu div{display:inline-block;font-family:'Oswald',serif}
+        #menu div#highlight{background:#fff}
+        #menu div a{color:#fff;border-color:#fff}
+        #menu div#highlight a{color:#000;border-color:#000}
+        #contact{float:left;text-align:right;position:absolute;right:0}
+        #contact div a{border-color:#fff}
+        .big,.big a{font-family:'Oswald',serif;font-size:30px;color:#fff}
+        #quote{font-family:'Libre Baskerville',serif;font-size:20px;font-style:italic;padding:20px 0;width:368px;margin:0 auto}
+        #copyright{font-size:20px;background:#000;text-align:right}
+        #drawing_grid{text-align:center}
+        #drawing_grid a{border:0}
+        .thumb{display:inline-block;margin:15px;width:350px}
+        .text{font-family:'Libre Baskerville',serif;font-size:15px}
+        p.photo{margin:0 auto}
+        @media (min-width: 1100px) {
+            .big,.big a,h2{font-size:30px}
+            #title,#menu div,#contact{padding:40px}
+            #quote{width:540px}
+            #copyright{padding:20px 40px 20px 0}
+            #content{padding-top:140px}
+        }
+        @media (min-width: 700px) and (max-width: 1100px) {
+            .big,.big a,h2{font-size:20px}
+            #title,#menu div,#contact{padding:20px}
+            #content{padding-top:85px}<?php
+if($width == 1024)
+    echo "\n            p.photo img{width:90%}\n";
+?>
+            #copyright{font-size:15px;padding:20px}
+        }
+<?php
+if($width < 1024)
+    echo "\n        @media (min-width: 450px) and (max-width: 760px) {
+            p.photo img{width:90%}
+        }\n";
+?>
+        @media (min-width: 450px) and (max-width: 700px) {
+            .big,.big a,h2{font-size:15px}
+            #title,#contact{padding:10px}
+            #menu div{padding:10px}
+            #content{padding-top:55px}
+            p.photo img{width:90%}
+            #copyright{font-size:12px;padding:10px}
+        }
+        @media (max-width: 450px) {
+            .big,.big a,h2{font-size:13px}
+            #quote{padding:20px 0}
+            #title,#contact{padding:10px}
+            #content{width:400px;padding-top:60px}
+            p.photo img{width:90%}
+            #menu{position:relative;left:6%}
+            #menu div{padding:10px 5px 10px 5px}
+            #copyright{font-size:12px;padding:10px}
+        }
+        -->
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="header">
+                <div id="title" class="big"><a href="/">Zack Zatkin-Gold</a></div>
+                <div id="menu" class="big">
+                    <div><a href="/art.html">Art</a></div>
+                    <div id="highlight"><a href="/photos.html">Photos</a></div>
+                    <div><a href="https://github.com/zg">Code</a></div>
+                    <div><a href="https://medium.com/@zg">Blog</a></div>
+                </div>
+                <div id="contact" class="big">
+                    <div><a href="mailto:zg@zk.gd">Contact</a></div>
+                </div>
+            </div>
+            <div id="content">
+<?php if($heading_title != "") echo "                <h2>".$heading_title."</h2>\n"; ?>
+<?php if(isset($info) || $photo == null) { ?>                <div id="quote"><?php
+if(isset($info))
+    echo $info->photoset->description->_content;
+else if($photo == null)
+    echo "I enjoy travelling, so every once in a while I'll go somewhere new and take photographs.";
+    ?></div><?php } ?>
+
+                <div id="drawing_grid">
+<?php
+if($photos !== null) {
+    foreach($photos as $photo) {
+        $is_set = isset($photo->primary);
+        echo '                    <a href="?'.($is_set ? '' : 'ps_id='.(isset($_GET['ps_id']) && is_numeric($_GET['ps_id']) ? $_GET['ps_id'] : 0).'&').'p'.($is_set ? 's' : '').'_id='.$photo->id.'">';
+            echo '<div class="thumb">';
+                echo '<img src="'.construct_image_url($photo->farm,$photo->server,($is_set ? $photo->primary : $photo->id),$photo->secret).'" alt="'.(is_object($photo->title) ? $photo->title->_content : $photo->title).'" width="350">';
+            if(isset($photo->title->_content)) {
+                echo '<span class="text">';
+                    echo str_replace(', ','<br>',$photo->title->_content);
+                echo '</span>';
+            }
+            echo '</div>';
+        echo '</a>'."\n";
+    }
+} else if($photo !== null && !$error) {
+    echo '                  <p class="photo"><img src="'.construct_image_url($photo->farm,$photo->server,$photo->id,$photo->secret,'b').'" alt="'.$photo_alt.'"></p>'."\n";
+}
+?>                </div>
+                <div id="copyright" class="big">&copy; 2015</div>
+            </div>
+        </div>
+    </body>
+</html>
