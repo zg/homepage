@@ -230,7 +230,7 @@ if($photos !== null) {
     echo '                  <p class="photo"><img src="'.construct_image_url($photo->farm,$photo->server,$photo->id,$photo->secret,'b').'" alt="'.$photo_alt.'"></p>'."\n";
 }
 ?>                </div>
-                <div id="copyright" class="big">&copy; 2015</div>
+                <div id="copyright" class="big">&copy; <?php echo date('Y'); ?></div>
             </div>
         </div>
     </body>
