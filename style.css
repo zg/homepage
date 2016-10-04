@@ -1,0 +1,86 @@
+@font-face {
+  font-family: "Unica One";
+  font-style: normal;
+  src: url('/unicaone.ttf');
+}
+
+@font-face {
+  font-family: "Vollkorn";
+  font-style: normal;
+  src: url('/vollkorn.ttf');
+}
+
+body {
+  background-image: url('back.jpg');
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #000;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+header {
+  color: rgb(204, 51, 17);
+  font: 30px 'Unica One';
+  margin-top: 125px;
+  text-align: center;
+}
+
+nav {
+  float: left;
+  font: 16px 'Vollkorn';
+}
+
+p {
+  font: 16px 'Vollkorn';
+}
+
+p.piece {
+  text-align: center;
+}
+
+article {
+  font: 16px 'Vollkorn';
+  margin: 0 auto;
+  text-align: justify;
+  width: 460px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #333;
+  color: #333;
+  width: 460px;
+}
+
+footer {
+  margin: 0 auto 125px auto;
+  width: 460px;
+}
+
+#copyright {
+  float: right;
+  font: 16px 'Vollkorn';
+}
+
+@media (max-width: 500px) {
+  body {
+    margin: 100px 0;
+  }
+
+  article,
+  footer,
+  hr {
+    width: 300px;
+  }
+
+  p img {
+    height: 300px;
+    width: 300px;
+  }
+}

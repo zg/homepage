@@ -1,89 +1,25 @@
 <!DOCTYPE html>
 <html lang="en-us">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <meta content="width=device-width,initial-scale=1" name="viewport">
-        <title>Zack Zatkin-Gold</title>
-        <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic" rel="stylesheet" type="text/css">
-        <style>
-            <!--
-            *{color:#000}
-            a{border-bottom:#000 1px solid;text-decoration:none}
-            body{background:#fff;margin:0;padding:0}
-            h2{font-family:'Libre Baskerville',serif;font-size:30px;text-align:center}
-            #container{margin:0;padding:0}
-            #header{position:fixed;display:flex;background:#000;width:100%;z-index:42}
-            #content{padding-top:90px}
-            #title{font-weight:bold;float:left;position:absolute;left:0}
-            #title a{border-color:#fff}
-            #menu{width:100%;text-align:center}
-            #menu div{display:inline-block;font-family:'Oswald',serif}
-            #menu div#highlight{background:#fff}
-            #menu div a{color:#fff;border-color:#fff}
-            #menu div#highlight a{color:#000;border-color:#000}
-            #contact{float:left;text-align:right;position:absolute;right:0}
-            #contact div a{border-color:#fff}
-            .big,.big a{font-family:'Oswald',serif;font-size:30px;color:#fff}
-            #quote{font-family:'Libre Baskerville',serif;font-size:20px;font-style:italic;padding:20px 0;width:400px;margin:0 auto}
-            #picture{margin:0 auto;border:1px solid #ccc;border-radius:50%;box-shadow:0 0 15px #888;height:283px;overflow:hidden;width:283px}
-            #copyright{font-size:20px;background:#000;text-align:right}
-            @media (min-width: 1100px) {
-                .big,.big a,#quote{font-size:30px}
-                #title,#menu div,#contact{padding:40px}
-                #quote{width:750px}
-                #copyright{padding:20px 40px 20px 0}
-                #content{padding-top:140px}
-                #picture img{width:283px;height:283px}
-            }
-            @media (min-width: 700px) and (max-width: 1100px) {
-                .big,.big a,#quote{font-size:20px}
-                #title,#menu div,#contact{padding:20px}
-                #content{padding-top:115px}
-                #copyright{font-size:15px;padding:20px}
-                #picture img{width:283px;height:283px}
-            }
-            @media (min-width: 450px) and (max-width: 700px) {
-                .big,.big a,#quote{font-size:15px}
-                #title,#contact{padding:10px}
-                #menu div{padding:10px}
-                #content{padding-top:85px}
-                #copyright{font-size:12px;padding:10px}
-                #picture,#picture img{width:200px;height:200px}
-            }
-            @media (max-width: 450px) {
-                .big,.big a,#quote{font-size:13px}
-                #quote{padding:20px 0;width:300px}
-                #title,#contact{padding:10px}
-                #content{width:400px;padding-top:60px}
-                #menu{position:relative;left:6%}
-                #menu div{padding:10px 5px 10px 5px}
-                #copyright{font-size:12px;padding:10px}
-                #picture,#picture img{width:140px;height:140px}
-            }
-            -->
-        </style>
-    </head>
-    <body>
-        <div id="container">
-            <div id="header">
-                <div id="title" class="big"><a href="/">Zack Zatkin-Gold</a></div>
-                <div id="menu" class="big">
-                    <div><a href="art.html">Art</a></div>
-                    <div><a href="photos.html">Photos</a></div>
-                    <div><a href="https://github.com/zg">Code</a></div>
-                    <div><a href="https://medium.com/@zg">Blog</a></div>
-                </div>
-                <div id="contact" class="big">
-                    <div><a href="mailto:zg@zk.gd">Contact</a></div>
-                </div>
-            </div>
-            <div id="content">
-                <div id="picture"><img src="zg.jpg" alt="Photo of Zack Zatkin-Gold"></div>
-                <div id="quote">A creative, young software engineer working at Cisco in Silicon Valley.</div>
-            </div>
-            <div id="copyright" class="big">&copy; <?php echo date('Y'); ?></div>
-        </div>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zack Zatkin-Gold</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>Zack Zatkin-Gold</header>
+    <article>
+      <p>Welcome to my personal homepage.</p>
+      <p>Due to unforeseen circumstances, I have been unemployed as of August
+        2016.  I am seeking employment as a software engineer near Milpitas.
+      </p>
+      <p>My resume can be found <a href="https://resume.zk.gd">here</a>.</p>
+    </article>
+    <footer>
+      <hr>
+      <div id="copyright">&copy; 2016</div>
+      <nav><a href="links.html">Links</a></nav>
+    </footer>
+  </body>
 </html>
